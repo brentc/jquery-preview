@@ -1734,7 +1734,9 @@ function Selector(form, selector) {
         'video' : [
           '<div class="selector rich">',
               '{{>title}}',
-              '{{>object}}',
+              '{{#object}}',
+                '{{>object}}',
+              '{{/object}}',
             '<div class="attributes">',
               '{{>description}}',
               '<span class="meta">',
@@ -1746,7 +1748,9 @@ function Selector(form, selector) {
         'rich' : [
           '<div class="selector rich">',
               '{{>title}}',
-              '{{>object}}',
+              '{{#object}}',
+                '{{object}}',
+              '{{/object}}',
             '<div class="attributes">',
               '{{>description}}',
               '<span class="meta">',
@@ -1758,7 +1762,9 @@ function Selector(form, selector) {
         'photo' : [
           '<div class="selector rich">',
               '{{>title}}',
-              '{{>object}}',
+              '{{#object}}',
+                '{{>object}}',
+              '{{/object}}',
             '<div class="attributes">',
               '{{>description}}',
               '<span class="meta">',

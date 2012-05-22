@@ -19,7 +19,7 @@
 
 (function($){
 function log(){
-  if ($.preview !== undefined && $.preview.debug && console){
+  if ($.preview !== undefined && $.preview.debug && window.console){
     console.log(Array.prototype.slice.call(arguments));
   }
 }
@@ -351,7 +351,7 @@ function Selector(form, selector) {
 
       // If there are images, set the information in the form.
       if (obj.images.length > 0) {
-        form.find('#id_thumbnail_url').val(encodeURIComponent(obj.images[0].url));
+        form.find('#id_thumbnail_url').val(obj.images[0].url);
       } else {
         this.elem.find('.thumbnail').hide();
       }
@@ -425,7 +425,7 @@ function Selector(form, selector) {
         return false;
       }
 
-      var thumb = encodeURIComponent(images.find('img').eq((left / -100)).attr('src'));
+      var thumb = images.find('img').eq((left / -width)).attr('src');
 
       //  Puts the current thumbnail into the thumbnail_url input
       form.find('#id_thumbnail_url').val(thumb);
@@ -462,7 +462,7 @@ function Selector(form, selector) {
       elem.one('blur', function (e) {
         var elem = $(e.target);
         // Sets the New Title in the hidden inputs
-        form.find('#id_title').val(encodeURIComponent(elem.val()));
+        form.find('#id_title').val(elem.val());
 
         var a = $('<a/>').attr({
             'class': 'title',
@@ -496,7 +496,7 @@ function Selector(form, selector) {
       elem.one('blur', function (e) {
         var elem = $(e.target);
         // Sets the New Title in the hidden inputs
-        form.find('#id_description').val(encodeURIComponent(elem.val()));
+        form.find('#id_description').val(elem.val());
 
         var a = $('<a/>').attr({
             'class': 'description',
@@ -858,6 +858,12 @@ function Preview(elem, options) {
         return false;
       }
 
+      if (!obj.safe) {
+        log('URL ('+obj.url+') was deemed unsafe: ' + obj.safe_message);
+        this.error(obj);
+        return false;
+      }
+
       // Generally you only want to handle preview objs that are of type
       // `html` or `image`. Others could include `ppt`,`video` or `audio`
       // which I don't believe you have a good solution for yet. We could
@@ -903,8 +909,8 @@ function Preview(elem, options) {
           }
           obj.image_url = v;
         }
-        else{
-          v = obj.hasOwnProperty(n) && obj[n] ? encodeURIComponent(obj[n]): '';
+        else {
+          v = obj[n];
         }
 
         var d = {
@@ -986,7 +992,7 @@ function Preview(elem, options) {
       // input that we should look for and compare values. If they are the
       // same we will ignore.
       var original_url = this.form.find('#id_original_url').val();
-      if (original_url === encodeURIComponent(url)) {
+      if (original_url === url) {
         return true;
       }
 
@@ -1003,8 +1009,8 @@ function Preview(elem, options) {
       return true;
     },
     keyUp : function (e) {
-      // Ignore Everthing but the spacebar Key event.
-      if (e.keyCode !== 32) {
+      // Only respond to keys that insert whitespace (spacebar, enter)
+      if (e.which !== 32 && e.which !== 13) {
         return null;
       }
 
@@ -1035,7 +1041,7 @@ function Preview(elem, options) {
         function (i, e) {
           var n = $(e).attr('name');
           if (n !== undefined) {
-            data[n] = decodeURIComponent($(e).val());
+            data[n] = $(e).val();
           }
       });
       // Clears the Selector.

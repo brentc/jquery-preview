@@ -136,6 +136,12 @@ function Preview(elem, options) {
         return false;
       }
 
+      if (!obj.safe) {
+        log('URL ('+obj.url+') was deemed unsafe: ' + obj.safe_message);
+        this.error(obj);
+        return false;
+      }
+
       // Generally you only want to handle preview objs that are of type
       // `html` or `image`. Others could include `ppt`,`video` or `audio`
       // which I don't believe you have a good solution for yet. We could
@@ -181,8 +187,8 @@ function Preview(elem, options) {
           }
           obj.image_url = v;
         }
-        else{
-          v = obj.hasOwnProperty(n) && obj[n] ? encodeURIComponent(obj[n]): '';
+        else {
+          v = obj[n];
         }
 
         var d = {
@@ -264,7 +270,7 @@ function Preview(elem, options) {
       // input that we should look for and compare values. If they are the
       // same we will ignore.
       var original_url = this.form.find('#id_original_url').val();
-      if (original_url === encodeURIComponent(url)) {
+      if (original_url === url) {
         return true;
       }
 
@@ -281,8 +287,8 @@ function Preview(elem, options) {
       return true;
     },
     keyUp : function (e) {
-      // Ignore Everthing but the spacebar Key event.
-      if (e.keyCode !== 32) {
+      // Only respond to keys that insert whitespace (spacebar, enter)
+      if (e.which !== 32 && e.which !== 13) {
         return null;
       }
 
@@ -313,7 +319,7 @@ function Preview(elem, options) {
         function (i, e) {
           var n = $(e).attr('name');
           if (n !== undefined) {
-            data[n] = decodeURIComponent($(e).val());
+            data[n] = $(e).val();
           }
       });
       // Clears the Selector.
